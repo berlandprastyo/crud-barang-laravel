@@ -15,10 +15,11 @@ class barangSeeder extends Seeder
     {
         Barang::create([
         'nama_barang'=>'Samsung Smart TV 32',
-        'jumlah_barang'=>'1',
+        'jumlah_barang'=>1,
         'deskripsi'=>'TV 32 inch',
         'image'=>'gambar/kosong.svg',
-        'harga_satuan'=>'3000000'
+        'kategori_id'=>1,
+        'harga_satuan'=>3000000
         ]);
     }
 }

@@ -18,7 +18,9 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->integer('jumlah_barang');
             $table->integer('harga_satuan');
+            $table->unsignedBigInteger('kategori_id');
             $table->timestamps();
+            $table->foreign('kategori_id')->references('id_kategori')->on('tb_kategori')->onDelete('cascade');
 
         });
     }
@@ -28,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('barangs');
+        Schema::dropIfExists('tb_barang');
     }
 };

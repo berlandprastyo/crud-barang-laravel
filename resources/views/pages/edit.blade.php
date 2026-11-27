@@ -55,17 +55,33 @@
         </div>
 
         {{-- Nama Barang --}}
-        <div class="mb-3">
-            <label for="nama_barang" class="form-label">Nama Barang</label>
-            <input type="text" name="nama_barang" id="nama_barang"
-                class="form-control"
-                placeholder="Masukkan nama barang"
-                value="{{ old('nama_barang', $data->nama_barang) }}">
-
-            @error('nama_barang')
-                <div class="form-text text-danger">{{ $message }}</div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="nama_barang" class="form-label">Nama Barang</label>
+                <input type="text" name="nama_barang" id="nama_barang"
+                class="form-control" placeholder="Masukkan nama barang" value="{{ $data->nama_barang }}">
+                @error('nama_barang')
+                <div class="form-text text-danger">{{$message}}</div>
+                @enderror
+            </div>
+            
+            <div class="col-md-6 mb-3">
+                <label for="nama_barang" class="form-label">Kategori Barang</label>
+                <select class="form-select" name="kategori" aria-label="Default select example">
+                <option value="">Kategori</option>
+                @foreach ($kategori as $item )
+                <option value="{{ $item->id_kategori }}"
+                {{ $item->id_kategori == $data->kategori_id ? 'selected' : '' }}>
+                {{ $item->nama_kategori }}
+                </option>
+                @endforeach
+            </select>
+            @error('kategori')
+            <div class="form-text text-danger">{{$message}}</div>
             @enderror
         </div>
+        </div>
+
 
         {{-- Jumlah dan Harga --}}
         <div class="row">
@@ -74,7 +90,7 @@
                 <input type="number" name="jumlah_barang" id="jumlah_barang"
                     class="form-control"
                     placeholder="Masukkan jumlah"
-                    value="{{ old('jumlah_barang', $data->jumlah_barang) }}">
+                    value="{{ $data->jumlah_barang }}">
 
                 @error('jumlah_barang')
                     <div class="form-text text-danger">{{ $message }}</div>
@@ -86,7 +102,7 @@
                 <input type="number" name="harga_satuan" id="harga_satuan"
                     class="form-control"
                     placeholder="Masukkan harga"
-                    value="{{ old('harga_satuan', $data->harga_satuan) }}">
+                    value="{{ $data->harga_satuan }}">
 
                 @error('harga_satuan')
                     <div class="form-text text-danger">{{ $message }}</div>
@@ -99,7 +115,7 @@
             <label for="deskripsi" class="form-label">Deskripsi</label>
             <textarea name="deskripsi" id="deskripsi"
                 class="form-control" rows="5"
-                placeholder="Deskripsi barang">{{ old('deskripsi', $data->deskripsi) }}</textarea>
+                placeholder="Deskripsi barang">{{ $data->deskripsi }}</textarea>
 
             @error('deskripsi')
                 <div class="form-text text-danger">{{ $message }}</div>

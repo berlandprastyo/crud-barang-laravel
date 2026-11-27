@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Barang;
+use App\Models\Kategori;
 use Illuminate\Support\Facades\Storage;
 
 class BarangController extends Controller
@@ -20,16 +21,34 @@ class BarangController extends Controller
     }
     public function data (Request $request) {
         $nama = $request->query('nama');
+        $kategori_id = $request->query('kategori');
+        $sortir = $request->query('sortir');
         $data = Barang::when($nama,function($query, $nama){
             $query->where('nama_barang','LIKE',"%$nama%");
-        })->orderBy('updated_at','desc')->get();
+        })->when($kategori_id,function ($query, $kategori_id) {
+            $query->where('kategori_id',$kategori_id);
+        })->when($sortir, function($query, $sortir){
+            if ($sortir == 'terbaru') {
+                $query->orderBy('updated_at','desc');
+            } elseif($sortir == 'terlama') {
+                $query->orderBy('updated_at','asc');
+            } elseif ($sortir == 'terbanyak') {
+                $query->orderBy('jumlah_barang');
+            } elseif ($sortir == 'terdikit') {
+                $query->orderBy('jumlah_barang','asc');
+            }
+        })->join('tb_kategori','tb_barang.kategori_id','=','tb_kategori.id_kategori')
+        ->select('tb_barang.*','tb_kategori.nama_kategori','tb_kategori.id_kategori')
+        ->get();
+        $kategori = Kategori::get();
         return view('pages.dataBarang',[
             'data'=>$data,
-            'nama'=>$nama
+            'kategori'=>$kategori
         ]);
     }
     public function tambah () {
-        return view('pages.tambah');
+        $kategori = Kategori::get();
+        return view('pages.tambah',compact('kategori'));
     }
     public function store (Request $request) {
         $request->validate([
@@ -37,7 +56,8 @@ class BarangController extends Controller
         'jumlah_barang' => ['required','integer','min:1'],
         'harga_satuan' => ['required','integer','min:100'],
         'deskripsi' => ['required','string','min:1'],
-        'gambar' => ['nullable','image', 'mimes:jpeg,jpg,png,webp', 'max:2000']
+        'gambar' => ['nullable','image', 'mimes:jpeg,jpg,png,webp', 'max:2000'],
+        'kategori'=>['required','exists:tb_kategori,id_kategori']
         ],[
             'nama_barang.required' => 'Kolom Nama Barang Wajib Diisi!',
             'nama_barang.string' => 'Kolom Nama Barang Wajib Berupa Teks!',
@@ -53,7 +73,8 @@ class BarangController extends Controller
             'deskripsi.min' => 'Kolom Deskripsi Minimal 1 Huruf!',
             'gambar.image' => 'File harus berupa gambar!',
             'gambar.mimes' => 'Format gambar harus JPG, JPEG, PNG, atau WEBP!',
-            'gambar.max' => 'Ukuran gambar maksimal 2 MB!'
+            'gambar.max' => 'Ukuran gambar maksimal 2 MB!',
+            'kategori.required' => 'Kolom Kategori Wajib Diisi!'
         ]);
         $path = "gambar/kosong.svg";
         if ($request->hasFile('gambar')) {
@@ -64,17 +85,20 @@ class BarangController extends Controller
         'jumlah_barang'=>$request->jumlah_barang,
         'deskripsi'=>$request->deskripsi,
         'harga_satuan'=>$request->harga_satuan,
-        'image'=>$path
+        'image'=>$path,
+        'kategori_id'=>$request->kategori
         ]);
         return redirect('/data')->with('success','Barang Berhasil Ditambahkan!');
     }
     public function detail ($id) {
-        $data = Barang::findorFail($id);
+        $data = Barang::where('id',$id)->join('tb_kategori','tb_kategori.id_kategori', '=','tb_barang.kategori_id')
+        ->select('tb_barang.*','tb_kategori.id_kategori','tb_kategori.nama_kategori')->firstorFail();
         return view('pages.detail',compact('data'));
     }
     public function edit ($id) {
+        $kategori = Kategori::get();
         $data = Barang::findorFail($id);
-        return view('pages.edit',compact('data'));
+        return view('pages.edit',compact('data','kategori'));
     }
     public function update ($id,Request $request) {
      $data = Barang::findorFail($id);
@@ -83,7 +107,8 @@ class BarangController extends Controller
             'jumlah_barang' => ['required','integer','min:1'],
             'harga_satuan' => ['required','integer','min:100'],
             'deskripsi' => ['required','string','min:1'],
-            'gambar' => ['nullable','image', 'mimes:jpeg,jpg,png,webp', 'max:2000']
+            'gambar' => ['nullable','image', 'mimes:jpeg,jpg,png,webp', 'max:2000'],
+             'kategori'=>['required','exists:tb_kategori,id_kategori']
             ],[
                 'nama_barang.required' => 'Kolom Nama Barang Wajib Diisi!',
                 'nama_barang.string' => 'Kolom Nama Barang Wajib Berupa Teks!',
@@ -99,7 +124,8 @@ class BarangController extends Controller
             'deskripsi.min' => 'Kolom Deskripsi Minimal 1 Huruf!',
             'gambar.image' => 'File harus berupa gambar!',
             'gambar.mimes' => 'Format gambar harus JPG, JPEG, PNG, atau WEBP!',
-            'gambar.max' => 'Ukuran gambar maksimal 2 MB!'
+            'gambar.max' => 'Ukuran gambar maksimal 2 MB!',
+            'kategori.required' => 'Kolom Kategori Wajib Diisi!'
             ]);
             $path = $data->image;
             if ($request->hasFile('gambar')) {
@@ -113,7 +139,8 @@ class BarangController extends Controller
                         'jumlah_barang'=>$request->jumlah_barang,
                         'deskripsi'=>$request->deskripsi,
                         'harga_satuan'=>$request->harga_satuan,
-                        'image'=>$path
+                        'image'=>$path,
+                        'kategori_id'=>$request->kategori
                         ]);
                         
                         return redirect('/data')->with('success','Barang Berhasil Diupdate!');

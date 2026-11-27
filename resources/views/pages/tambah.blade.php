@@ -8,14 +8,28 @@
 
     <form action="" method="POST" enctype="multipart/form-data">
         @csrf
-
-        <div class="mb-3">
-            <label for="nama_barang" class="form-label">Nama Barang</label>
-            <input type="text" name="nama_barang" id="nama_barang"
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="nama_barang" class="form-label">Nama Barang</label>
+                <input type="text" name="nama_barang" id="nama_barang"
                 class="form-control" placeholder="Masukkan nama barang" value="{{ old('nama_barang') }}">
-            @error('nama_barang')
+                @error('nama_barang')
                 <div class="form-text text-danger">{{$message}}</div>
+                @enderror
+            </div>
+            
+            <div class="col-md-6 mb-3">
+                <label for="nama_barang" class="form-label">Kategori Barang</label>
+                <select class="form-select" name="kategori" aria-label="Default select example">
+                <option selected value="">Kategori</option>
+                @foreach ($kategori as $item )
+                <option value="{{ $item->id_kategori }}">{{ $item->nama_kategori }}</option>
+                @endforeach
+            </select>
+            @error('kategori')
+            <div class="form-text text-danger">{{$message}}</div>
             @enderror
+        </div>
         </div>
 
         <div class="row">

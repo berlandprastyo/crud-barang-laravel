@@ -14,20 +14,30 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        
       </ul>
-      <form class="d-flex" method="GET" action="">
-        {{-- <div class="btn-group">
-          <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-           Small button
-          </button>
-      <ul class="dropdown-menu">
-    ...
-       </ul>
-            </div> --}}
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="nama" value="{{ $nama }}">
-        <button class="btn btn-primary" type="submit">Search</button>
-      </form>
+      <form class="d-flex gap-2 w-70" method="GET" action="">
+        <select class="form-select" name="sortir">
+          <option value="">Sortir</option>
+          <option value="terbaru" {{ request()->query('sortir') == 'terbaru' ? 'selected' : '' }}>Terbaru</option>
+          <option value="terlama" {{ request()->query('sortir') == 'terlama' ? 'selected' : '' }}>Terlama</option>
+          <option value="terbanyak" {{ request()->query('sortir') == 'terbanyak' ? 'selected' : '' }}>Stok Terbanyak</option>
+          <option value="terdikit" {{ request()->query('sortir') == 'terdikit' ? 'selected' : '' }}>Stok Terdikit</option>
+        </select>
+    <select class="form-select" name="kategori" style="width: 200px;">
+        <option value="">Semua Kategori</option>
+        @foreach ($kategori as $item)
+            <option
+                value="{{ $item->id_kategori }}"
+                {{ $item->id_kategori == request()->query('kategori') ? 'selected' : '' }}>
+                {{ $item->nama_kategori }}
+            </option>
+        @endforeach
+    </select>
+
+    <input class="form-control flex-grow-1" type="search" placeholder="Cari nama barang..." name="nama"
+    value="{{ request('nama') }}" >
+    <button class="btn btn-primary" type="submit">Search</button>
+</form>
     </div>
   </div>
 </nav>
@@ -39,6 +49,7 @@
       <th scope="col">Nama Barang</th>
       <th scope="col">Jumlah</th>
       <th scope="col">Harga Satuan</th>
+      <th scope="col">Kategori</th>
       <th>Aksi</th>
     </tr>
   </thead>
@@ -49,6 +60,7 @@
       <td>{{$item->nama_barang}}</td>
       <td>{{$item->jumlah_barang}}</td>
       <td>{{number_format($item->harga_satuan,2,',','.')}}</td>
+      <td>{{$item->nama_kategori}}</td>
       <td>
         <div class="d-flex gap-2">
           <form action="/{{ $item->id }}/edit">
@@ -59,12 +71,12 @@
             @csrf
             @method('DELETE')
            <!-- Button trigger modal -->
-<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#hapusData">
+<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#hapusData{{ $item->id }}">
   Hapus
 </button>
 
 <!-- Modal -->
-<div class="modal fade" id="hapusData" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="hapusData{{ $item->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">

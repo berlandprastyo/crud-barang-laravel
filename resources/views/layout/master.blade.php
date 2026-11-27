@@ -39,6 +39,11 @@
                 <i data-lucide="package-plus"></i>Tambah Barang
             </a>
         </li>
+        <li class="nav-item">
+            <a href="{{ route('kategori.index') }}" class="nav-link {{ request()->is('kategori') ? 'text-white active' : 'text-black' }}">
+                <i data-lucide="tags"></i>Kelola Kategori
+            </a>
+        </li>
     </ul>
 </div>
 

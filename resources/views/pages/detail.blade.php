@@ -35,6 +35,10 @@
                     <small class="text-secondary">Jumlah Barang</small>
                     <h5>{{ $data->jumlah_barang }}</h5>
                 </div>
+                <div class="col-md-6 mb-3">
+                    <small class="text-secondary">Kategori</small>
+                    <h5>{{ $data->nama_kategori }}</h5>
+                </div>
 
                 <div class="col-md-6 mb-3">
                     <small class="text-secondary">Harga Satuan</small>

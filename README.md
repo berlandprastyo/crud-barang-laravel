@@ -4,16 +4,18 @@ Aplikasi web sederhana berbasis Laravel untuk mengelola inventaris barang pada T
 
 ## Fitur
 
-### 1. Manajemen Data Barang
-- Menambahkan data barang.
-- Menampilkan seluruh data barang.
+### 1. Manajemen Data Barang & Kategori
+- Menambahkan data barang dan kategori.
+- Menampilkan seluruh data barang dan kategori.
 - Melihat detail barang.
-- Mengubah data barang.
-- Menghapus data barang.
+- Mengubah data barang dan kategori.
+- Menghapus data barang dan kategori.
 - Mengunggah dan mengelola gambar barang.
 
 ### 2. Pencarian Barang
 - Mencari barang berdasarkan nama barang.
+- Penambahan filter per kategori
+- Penambahan filter data terbaru atau terlama
 
 ### 3. Dashboard
 Dashboard menyediakan ringkasan informasi inventaris, meliputi:
@@ -32,4 +34,4 @@ Dashboard menyediakan ringkasan informasi inventaris, meliputi:
 ## Teknologi
 - PHP
 - Laravel
-- My
+- MySQL

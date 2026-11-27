@@ -10,6 +10,6 @@ class Barang extends Model
 use HasUuids;
    protected $table = 'tb_barang';
    protected $primaryKey = 'id';
-   protected $fillable = ['nama_barang','deskripsi','jumlah_barang','harga_satuan','image'];
-   protected $guarded = ['id'];
+   protected $fillable = ['nama_barang','deskripsi','jumlah_barang','harga_satuan','image','kategori_id'];
+   protected $guarded = ['id','created_at','updated_at'];
 }
